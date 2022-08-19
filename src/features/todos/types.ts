@@ -27,3 +27,8 @@ export type Todo = {
   updatedAt?: DateTime;
   deletedAt?: DateTime;
 };
+
+export type TodoUpdatePayload = {
+  id: TodoId;
+  input: Partial<TodoInput>;
+};
