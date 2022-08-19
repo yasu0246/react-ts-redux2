@@ -1,9 +1,13 @@
 import type { FC } from 'react';
-import { useAppSelector, useAppDispatch } from '../../../app/hooks';
-import { remove, update, selectTodos } from '../todosSlice';
+import { useAppDispatch } from '../../../app/hooks';
+import { remove, update, restore } from '../todosSlice';
+import type { Todo } from '../types'
 
-export const TodoList: FC = () => {
-  const todos = useAppSelector(selectTodos);
+type Props = {
+  todos: Todo[];
+};
+
+export const TodoList: FC<Props> = ({todos}) => {
   const dispatch = useAppDispatch();
 
   return (
@@ -42,6 +46,7 @@ export const TodoList: FC = () => {
                   <td>{todo.deletedAt ?? '無し'}</td>
                   <td>
                     <button
+                      disabled={isDeletedTodo(todo)}
                       onClick={() => {
                         //TODO: 更新機能の実装
                         dispatch(update({
@@ -60,24 +65,39 @@ export const TodoList: FC = () => {
                       更新
                     </button>
                   </td>
+
                   <td>
+                    {isDeletedTodo(todo)? 
+                    (
                     <button
                       onClick={() => {
-                        //TODO: 削除機能の実装
-                        dispatch(remove(todo.id));
+                       dispatch(restore(todo.id));
                       }}
                     >
-                      削除
+                      復元
                     </button>
+                  ) : (
+                    <button
+                    onClick={() => {
+                     dispatch(remove(todo.id));
+                  }}
+                >
+                  削除
+                </button>
+                  )}                  
                   </td>
                 </tr>
               );
-            })
-          )}
+           })
+         )}
         </tbody>
       </table>
     </>
   );
+};
+
+const isDeletedTodo = (todo: Todo) => {
+  return todo.deletedAt !== undefined;
 };
 
 export default TodoList;
