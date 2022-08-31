@@ -9,15 +9,13 @@ export const useConfirmModal = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [onOKHandler, setOnOKHandler] = useState<OnOKHandlerType>();
 
-  const open = useCallback(
-    (callback: OnOKHandlerType) => {
+  const open = (callback: OnOKHandlerType) => {
       setIsOpen(true);
       setOnOKHandler(() => {
         return callback;
       });
-    },
-    [setIsOpen, setOnOKHandler]
-  );
+    };
+    
   const close = useCallback(() => {
     setIsOpen(false);
   }, [setIsOpen]);
