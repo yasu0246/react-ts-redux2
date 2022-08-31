@@ -2,6 +2,7 @@ import type { FC } from 'react';
 import { useAppDispatch } from '../../../app/hooks';
 import { remove, update, restore } from '../todosSlice';
 import type { Todo } from '../types'
+import { useConfirmModal } from './modals/ConfirmModal/useConfirmModal';
 
 type Props = {
   todos: Todo[];
@@ -9,9 +10,15 @@ type Props = {
 
 export const TodoList: FC<Props> = ({todos}) => {
   const dispatch = useAppDispatch();
+  const {
+    open: openConfirmModal,
+    setMessage,
+    ConfirmModalWrapper,
+  } = useConfirmModal();
 
   return (
     <>
+    <ConfirmModalWrapper />
       <table border={1}>
         <thead>
           <tr>
@@ -71,7 +78,8 @@ export const TodoList: FC<Props> = ({todos}) => {
                     (
                     <button
                       onClick={() => {
-                       dispatch(restore(todo.id));
+                        setMessage('復元しますか？');
+                        openConfirmModal(() => dispatch(restore(todo.id)));
                       }}
                     >
                       復元
@@ -79,7 +87,8 @@ export const TodoList: FC<Props> = ({todos}) => {
                   ) : (
                     <button
                     onClick={() => {
-                     dispatch(remove(todo.id));
+                      setMessage('本当に削除しますか？');
+                      openConfirmModal(() => dispatch(remove(todo.id)));
                   }}
                 >
                   削除
